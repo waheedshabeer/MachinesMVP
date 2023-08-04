@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  TextInput,
-  Button
-} from "react-native";
+import { View, Text, StyleSheet, TextInput, Button } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { AntDesign } from "@expo/vector-icons";
 import { useDispatch } from "react-redux";
@@ -55,6 +48,7 @@ const CategoryComponent = ({ onRemove, category }) => {
 
     updateCat({ fields: updatedFields });
   };
+
   const setTitleFieldType = (field) => {
     const { value } = field;
     updateCat({ titleField: value });
@@ -74,6 +68,7 @@ const CategoryComponent = ({ onRemove, category }) => {
     updatedFields.splice(index, 1);
     updateCat({ fields: updatedFields });
   };
+
   return (
     <View style={styles.container}>
       <Text>{categoryName}</Text>
@@ -173,7 +168,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     paddingHorizontal: 3,
     paddingVertical: 1,
-    width: "98%",
+    width: "48%",
     marginHorizontal: "1%"
   },
   input: {
