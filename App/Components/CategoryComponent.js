@@ -1,4 +1,3 @@
-//import liraries
 import React, { useState } from "react";
 import {
   View,
@@ -6,71 +5,163 @@ import {
   StyleSheet,
   TouchableOpacity,
   TextInput,
-  Button,
+  Button
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { AntDesign } from "@expo/vector-icons";
+import { useDispatch } from "react-redux";
+import { updateCategory } from "../Redux/Actions/categoryAction";
 
-// create a component
-const CategoryComponent = ({ onRemove }) => {
-  const [categoryName, setCategoryName] = useState("");
-  const [field, setField] = useState("");
+const CategoryComponent = ({ onRemove, category }) => {
+  const { categoryName, fields, titleField } = category;
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState("");
-  const [items, setItems] = useState([
-    { label: "Apple", value: "apple" },
-    { label: "Banana", value: "banana" },
+  const [openTitleField, setOpenTitleField] = useState(false);
+  const [inputTypes, setItems] = useState([
+    { label: "Text", value: "Text" },
+    { label: "Checkbox", value: "Checkbox" },
+    { label: "Date", value: "Date" },
+    { label: "Number", value: "Number" }
+  ]);
+  const [titleFieldsTypes, setTitleFieldsTypes] = useState([
+    { label: "Model", value: "Text" },
+    { label: "Manufactured On", value: "Manufactured On" },
+    { label: "Does it work?", value: "Does it work?" },
+    { label: "Weight", value: "Weight" }
   ]);
 
+  const dispatch = useDispatch();
+
+  const setCategoryName = (categoryName) => {
+    updateCat({ categoryName });
+  };
+  const setField = (field, index) => {
+    let updatedField = fields[index];
+    updatedField.field = field;
+
+    let updatedFields = fields;
+    updatedFields[index] = updatedField;
+
+    updateCat({ fields: updatedFields });
+  };
+
+  const setFiledType = (field, index) => {
+    const { value } = field;
+
+    let updatedField = fields[index];
+    updatedField.filedType = value;
+
+    let updatedFields = fields;
+    updatedFields[index] = updatedField;
+
+    updateCat({ fields: updatedFields });
+  };
+  const setTitleFieldType = (field) => {
+    const { value } = field;
+    updateCat({ titleField: value });
+  };
+
+  const updateCat = (prop) => {
+    dispatch(updateCategory({ ...category, ...prop }));
+  };
+
+  const addNewField = () => {
+    const newField = { field: "", filedType: "Text" };
+    updateCat({ fields: fields.concat(newField) });
+  };
+
+  const onRemoveField = (index) => {
+    let updatedFields = fields;
+    updatedFields.splice(index, 1);
+    updateCat({ fields: updatedFields });
+  };
   return (
     <View style={styles.container}>
-      <Text>Bulldozer</Text>
+      <Text>{categoryName}</Text>
       <TextInput
         style={styles.input}
-        onChangeText={(text) => {
-          setCategoryName(text);
-        }}
+        onChangeText={setCategoryName}
         value={categoryName}
-        placeholder="New Category"
+        placeholder="Category name"
       />
-      <View style={styles.fieldRow}>
-        <TextInput
-          value={field}
-          style={styles.field}
-          onChangeText={(text) => {
-            setField(text);
-          }}
-          placeholder="Field"
+
+      {fields.map((fieldsItem, index) => {
+        const { field, filedType } = fieldsItem;
+        return (
+          <View style={styles.fieldRow} key={index}>
+            <AntDesign
+              name="delete"
+              size={24}
+              color="black"
+              onPress={() => onRemoveField(index)}
+              style={{ width: "10%" }}
+            />
+
+            <TextInput
+              value={field}
+              style={styles.field}
+              onChangeText={(text) => setField(text, index)}
+              placeholder="Field"
+            />
+
+            <DropDownPicker
+              open={open}
+              value={filedType}
+              items={inputTypes}
+              setOpen={setOpen}
+              setItems={setItems}
+              onSelectItem={(item) => setFiledType(item, index)}
+              style={{
+                width: "30%",
+                height: 40,
+                borderWidth: 0
+              }}
+              placeholder="Text"
+              showArrowIcon={false}
+              listMode="MODAL"
+            />
+          </View>
+        );
+      })}
+
+      <DropDownPicker
+        open={openTitleField}
+        value={titleField}
+        items={titleFieldsTypes}
+        setOpen={setOpenTitleField}
+        setItems={setTitleFieldsTypes}
+        onSelectItem={setTitleFieldType}
+        style={styles.mainButton}
+        labelStyle={{
+          color: "white",
+          textAlign: "center"
+        }}
+        placeholderStyle={{
+          color: "white",
+          textAlign: "center"
+        }}
+        placeholder="TITLE FIELD: UNAMED FIELD"
+        showArrowIcon={false}
+        listMode="MODAL"
+      />
+
+      <View
+        style={{
+          flexDirection: "row",
+          marginTop: 2,
+          justifyContent: "space-between",
+          marginBottom: 10
+        }}
+      >
+        <Button
+          title="ADD NEW FIELD"
+          style={{ width: 20 }}
+          onPress={addNewField}
         />
-        <DropDownPicker
-          open={open}
-          value={value}
-          items={items}
-          setOpen={setOpen}
-          setValue={setValue}
-          setItems={setItems}
-          style={{
-            width: 60,
-            height: 20,
-            borderRadius: 0,
-          }}
-          placeholder="Text"
-          showArrowIcon={false}
+        <Button
+          title="REMOVE ITEM"
+          style={{ width: 20 }}
+          onPress={() => onRemove(category.key)}
         />
-        <AntDesign
-          name="delete"
-          size={24}
-          color="black"
-          style={{ marginTop: 10 }}
-          onPress={onRemove}
-        />
-      </View>
-      <TouchableOpacity style={styles.mainButton}>
-        <Text>Title Field: {categoryName}</Text>
-      </TouchableOpacity>
-      <View style={{ flexDirection: "row", marginTop: 2 }}>
-        <Button title="ADD NEW FIELD" style={{ width: 20 }} />
-        <Button title="Remove" style={{ width: 20 }} />
       </View>
     </View>
   );
@@ -79,33 +170,35 @@ const CategoryComponent = ({ onRemove }) => {
 // define your styles
 const styles = StyleSheet.create({
   container: {
-    height: 200,
-    width: 250,
     backgroundColor: "white",
     paddingHorizontal: 3,
     paddingVertical: 1,
+    width: "98%",
+    marginHorizontal: "1%"
   },
   input: {
-    width: 220,
-    height: 50,
     borderWidth: 1,
-    borderColor: "blue",
+    height: 40,
+    marginBottom: 10
   },
   fieldRow: {
     flexDirection: "row",
-    width: 60,
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: 2
   },
   mainButton: {
-    backgroundColor: "blue",
-    padding: 4,
+    backgroundColor: "purple",
     marginTop: 4,
+    borderRadius: 0
   },
   field: {
-    width: 150,
-    height: 50,
     borderWidth: 1,
-    borderColor: "blue",
-  },
+    width: "60%",
+    height: 40,
+    marginHorizontal: 2
+  }
 });
 
 //make this component available to the app

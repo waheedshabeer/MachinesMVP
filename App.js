@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { SafeAreaView, StyleSheet } from "react-native";
 import MainNavigator from "./App/Navigation/MainNavigator";
 import { NavigationContainer } from "@react-navigation/native";
 import { Provider } from "react-redux";
@@ -11,7 +11,9 @@ const App = () => {
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <NavigationContainer>
-          <MainNavigator />
+          <SafeAreaView style={{ flex: 1 }}>
+            <MainNavigator />
+          </SafeAreaView>
         </NavigationContainer>
       </PersistGate>
     </Provider>
@@ -23,6 +25,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    justifyContent: "center",
-  },
+    justifyContent: "center"
+  }
 });

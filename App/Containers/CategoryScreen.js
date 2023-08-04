@@ -1,40 +1,63 @@
 //import liraries
-import React, { Component, useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import React from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  FlatList
+} from "react-native";
 import CategoryComponent from "../Components/CategoryComponent";
 import { useDispatch, useSelector } from "react-redux";
 import { addCategory } from "../Redux/Actions/categoryAction";
 import { removeCategory } from "../Redux/Actions/categoryAction";
 
-// create a component
 const Category = () => {
-  // const [categories, setCategories] = useState([]);
-  const [componentKey, setComponentKey] = useState(0);
   const categories = useSelector((state) => state.category.categories);
   const dispatch = useDispatch();
 
   const handleAddCategory = () => {
-    dispatch(addCategory({ key: Date.now(), name: "New Category" }));
+    dispatch(
+      addCategory({
+        key: Date.now(),
+        categoryName: "",
+        fields: [{ field: "", filedType: "Text" }],
+        titleField: "Unamed Field"
+      })
+    );
   };
 
-  const handleRemoveCategory = () => {
-    dispatch(removeCategory(categorykey));
+  const handleRemoveCategory = (categoryKey) => {
+    dispatch(removeCategory(categoryKey));
   };
+
+  const renderItem = ({ item, index }) => (
+    <CategoryComponent
+      category={item}
+      key={index}
+      onRemove={handleRemoveCategory}
+    />
+  );
 
   return (
     <View style={styles.container}>
       {categories.length === 0 ? (
         <Text style={styles.buttonText}>No Categories to display</Text>
       ) : null}
-      {categories.map((key) => (
-        <CategoryComponent
-          key={key}
-          onRemove={() => handleRemoveCategory(key)}
-        />
-      ))}
-      <TouchableOpacity style={styles.button} onPress={handleAddCategory}>
-        <Text style={styles.buttonText}>Add New Category</Text>
-      </TouchableOpacity>
+
+      <FlatList
+        data={categories}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.key}
+        numColumns={2}
+        showsVerticalScrollIndicator={false}
+        style={{ width: "100%" }}
+        ListFooterComponent={
+          <TouchableOpacity style={styles.button} onPress={handleAddCategory}>
+            <Text style={styles.buttonText}>Add New Category</Text>
+          </TouchableOpacity>
+        }
+      />
     </View>
   );
 };
@@ -43,22 +66,20 @@ const Category = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#2c3e50",
+    alignItems: "center"
   },
   button: {
     backgroundColor: "blue",
-    position: "absolute",
     bottom: 0,
-    width: "95%",
     alignItems: "center",
-    padding: 5,
     marginBottom: 5,
+    width: "80%",
+    padding: 10,
+    alignSelf: "center"
   },
   buttonText: {
-    color: "white",
-  },
+    color: "white"
+  }
 });
 
 //make this component available to the app
