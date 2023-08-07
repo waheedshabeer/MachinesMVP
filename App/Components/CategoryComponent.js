@@ -1,25 +1,26 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TextInput, Button } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
-import { AntDesign } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import { useDispatch } from "react-redux";
 import { updateCategory } from "../Redux/Actions/categoryAction";
+import DetailField from "./DetailField";
 
 const CategoryComponent = ({ onRemove, category }) => {
   const { categoryName, fields, titleField } = category;
   const [open, setOpen] = useState(false);
   const [openTitleField, setOpenTitleField] = useState(false);
   const [inputTypes, setItems] = useState([
-    { label: "Text", value: "Text" },
+    { label: "TEXT", value: "TEXT" },
     { label: "Checkbox", value: "Checkbox" },
     { label: "Date", value: "Date" },
-    { label: "Number", value: "Number" }
+    { label: "Number", value: "Number" },
   ]);
   const [titleFieldsTypes, setTitleFieldsTypes] = useState([
     { label: "Model", value: "Text" },
     { label: "Manufactured On", value: "Manufactured On" },
     { label: "Does it work?", value: "Does it work?" },
-    { label: "Weight", value: "Weight" }
+    { label: "Weight", value: "Weight" },
   ]);
 
   const dispatch = useDispatch();
@@ -48,7 +49,6 @@ const CategoryComponent = ({ onRemove, category }) => {
 
     updateCat({ fields: updatedFields });
   };
-
   const setTitleFieldType = (field) => {
     const { value } = field;
     updateCat({ titleField: value });
@@ -68,55 +68,61 @@ const CategoryComponent = ({ onRemove, category }) => {
     updatedFields.splice(index, 1);
     updateCat({ fields: updatedFields });
   };
-
   return (
     <View style={styles.container}>
-      <Text>{categoryName}</Text>
-      <TextInput
-        style={styles.input}
+      <Text style={{ marginHorizontal: 10 }}>{categoryName}</Text>
+      <DetailField
+        heading={"Category name"}
+        text={"Category name"}
         onChangeText={setCategoryName}
         value={categoryName}
-        placeholder="Category name"
+        width={"100%"}
       />
 
-      {fields.map((fieldsItem, index) => {
-        const { field, filedType } = fieldsItem;
-        return (
-          <View style={styles.fieldRow} key={index}>
-            <AntDesign
-              name="delete"
-              size={24}
-              color="black"
-              onPress={() => onRemoveField(index)}
-              style={{ width: "10%" }}
-            />
+      {fields?.length
+        ? fields.map((fieldsItem, index) => {
+            const { field, filedType } = fieldsItem;
+            return (
+              <View style={styles.fieldRow} key={index}>
+                <DetailField
+                  heading={"Field"}
+                  text={"Field"}
+                  width={"50%"}
+                  onChangeText={(text) => setField(text, index)}
+                  value={field}
+                />
 
-            <TextInput
-              value={field}
-              style={styles.field}
-              onChangeText={(text) => setField(text, index)}
-              placeholder="Field"
-            />
-
-            <DropDownPicker
-              open={open}
-              value={filedType}
-              items={inputTypes}
-              setOpen={setOpen}
-              setItems={setItems}
-              onSelectItem={(item) => setFiledType(item, index)}
-              style={{
-                width: "30%",
-                height: 40,
-                borderWidth: 0
-              }}
-              placeholder="Text"
-              showArrowIcon={false}
-              listMode="MODAL"
-            />
-          </View>
-        );
-      })}
+                <View style={styles.dropDownView}>
+                  <DropDownPicker
+                    open={open}
+                    value={filedType}
+                    items={inputTypes}
+                    setOpen={setOpen}
+                    setItems={setItems}
+                    textStyle={{ color: "#6000EC", fontWeight: "bold" }}
+                    onSelectItem={(item) => setFiledType(item, index)}
+                    containerStyle={styles.dropDownContainer}
+                    style={{
+                      width: 60,
+                      height: 55,
+                      borderWidth: 0,
+                    }}
+                    placeholderStyle={{ color: "#6000EC" }}
+                    placeholder="TEXT"
+                    showArrowIcon={false}
+                    listMode="MODAL"
+                  />
+                  <MaterialIcons
+                    name="delete"
+                    size={30}
+                    color="black"
+                    onPress={() => onRemoveField(index)}
+                  />
+                </View>
+              </View>
+            );
+          })
+        : null}
 
       <DropDownPicker
         open={openTitleField}
@@ -126,37 +132,24 @@ const CategoryComponent = ({ onRemove, category }) => {
         setItems={setTitleFieldsTypes}
         onSelectItem={setTitleFieldType}
         style={styles.mainButton}
-        labelStyle={{
-          color: "white",
-          textAlign: "center"
-        }}
-        placeholderStyle={{
-          color: "white",
-          textAlign: "center"
-        }}
-        placeholder="TITLE FIELD: UNAMED FIELD"
+        labelStyle={styles.labelStyle}
+        placeholderStyle={styles.placeholderStyle}
+        placeholder="TITLE FIELD: MODEL"
         showArrowIcon={false}
         listMode="MODAL"
       />
 
-      <View
-        style={{
-          flexDirection: "row",
-          marginTop: 2,
-          justifyContent: "space-between",
-          marginBottom: 10
-        }}
-      >
-        <Button
-          title="ADD NEW FIELD"
-          style={{ width: 20 }}
-          onPress={addNewField}
-        />
-        <Button
-          title="REMOVE ITEM"
-          style={{ width: 20 }}
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.addFieldButton} onPress={addNewField}>
+          <Text style={styles.addFieldText}>ADD NEW FIELD</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.removeButton}
           onPress={() => onRemove(category.key)}
-        />
+        >
+          <MaterialIcons name="delete" size={24} color="#7456D2" />
+          <Text style={styles.removeText}>REMOVE</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -168,32 +161,69 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     paddingHorizontal: 3,
     paddingVertical: 1,
-    width: "48%",
-    marginHorizontal: "1%"
+    width: "98%",
+    marginHorizontal: "1%",
+    marginBottom: 10,
   },
   input: {
     borderWidth: 1,
     height: 40,
-    marginBottom: 10
+    marginBottom: 10,
+  },
+  labelStyle: {
+    color: "white",
+    textAlign: "center",
+  },
+  placeholderStyle: {
+    color: "white",
+    fontWeight: "600",
+    textAlign: "center",
   },
   fieldRow: {
     flexDirection: "row",
-    width: "100%",
     alignItems: "center",
-    justifyContent: "space-between",
-    padding: 2
+    justifyContent: "flex-start",
+    padding: 2,
   },
   mainButton: {
-    backgroundColor: "purple",
+    backgroundColor: "#6000EC",
     marginTop: 4,
-    borderRadius: 0
+    borderRadius: 0,
+  },
+  removeButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 10,
+    marginHorizontal: 10,
   },
   field: {
     borderWidth: 1,
     width: "60%",
     height: 40,
-    marginHorizontal: 2
-  }
+    marginHorizontal: 2,
+  },
+  dropDownView: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "50%",
+    justifyContent: "space-between",
+  },
+  dropDownContainer: {
+    width: 90,
+    marginLeft: 5,
+    borderRadius: 5,
+    borderWidth: 0.5,
+    alignItems: "center",
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    marginTop: 2,
+    justifyContent: "flex-start",
+    marginBottom: 10,
+  },
+  removeText: { color: "#7456D2", fontWeight: "600" },
+  addFieldText: { padding: 10, color: "#7456D2", fontWeight: "600" },
+  addFieldButton: { borderWidth: 0.5, borderRadius: 5, marginTop: 10 },
 });
 
 //make this component available to the app

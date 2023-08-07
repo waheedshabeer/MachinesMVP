@@ -5,7 +5,7 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  FlatList
+  FlatList,
 } from "react-native";
 import CategoryComponent from "../Components/CategoryComponent";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,7 +22,7 @@ const Category = () => {
         key: Date.now(),
         categoryName: "",
         fields: [{ field: "", filedType: "Text" }],
-        titleField: "Unamed Field"
+        titleField: "Unamed Field",
       })
     );
   };
@@ -66,7 +66,7 @@ const Category = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center"
+    alignItems: "center",
   },
   button: {
     backgroundColor: "blue",
@@ -75,11 +75,11 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     width: "80%",
     padding: 10,
-    alignSelf: "center"
+    alignSelf: "center",
   },
   buttonText: {
-    color: "white"
-  }
+    color: "white",
+  },
 });
 
 //make this component available to the app
