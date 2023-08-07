@@ -31,20 +31,22 @@ const Category = () => {
     dispatch(removeCategory(categoryKey));
   };
 
-  const renderItem = ({ item, index }) => (
-    <CategoryComponent
-      category={item}
-      key={index}
-      onRemove={handleRemoveCategory}
-    />
-  );
+  const renderItem = ({ item, index }) => {
+    return (
+      <CategoryComponent
+        category={item}
+        key={index}
+        onRemove={handleRemoveCategory}
+        length={categories?.length}
+      />
+    );
+  };
 
   return (
     <View style={styles.container}>
       {categories.length === 0 ? (
         <Text style={styles.buttonText}>No Categories to display</Text>
       ) : null}
-
       <FlatList
         data={categories}
         renderItem={renderItem}

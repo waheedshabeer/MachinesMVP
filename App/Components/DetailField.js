@@ -18,8 +18,8 @@ const DetailField = ({ heading, onChangeText, text, width, value }) => {
           placeholder={text}
           value={value}
           style={{
-            marginHorizontal: 10,
-            width: "100%",
+            marginHorizontal: 5,
+            width: "95%",
           }}
         />
       </View>

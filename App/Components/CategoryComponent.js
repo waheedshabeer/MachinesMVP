@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 import { updateCategory } from "../Redux/Actions/categoryAction";
 import DetailField from "./DetailField";
 
-const CategoryComponent = ({ onRemove, category }) => {
+const CategoryComponent = ({ onRemove, category, length }) => {
   const { categoryName, fields, titleField } = category;
   const [open, setOpen] = useState(false);
   const [openTitleField, setOpenTitleField] = useState(false);
@@ -69,7 +69,7 @@ const CategoryComponent = ({ onRemove, category }) => {
     updateCat({ fields: updatedFields });
   };
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { width: length == 1 ? "96%" : "46%" }]}>
       <Text style={{ marginHorizontal: 10 }}>{categoryName}</Text>
       <DetailField
         heading={"Category name"}
@@ -87,7 +87,7 @@ const CategoryComponent = ({ onRemove, category }) => {
                 <DetailField
                   heading={"Field"}
                   text={"Field"}
-                  width={"50%"}
+                  width={length == 1 ? "48%" : "42%"}
                   onChangeText={(text) => setField(text, index)}
                   value={field}
                 />
@@ -99,12 +99,21 @@ const CategoryComponent = ({ onRemove, category }) => {
                     items={inputTypes}
                     setOpen={setOpen}
                     setItems={setItems}
-                    textStyle={{ color: "#6000EC", fontWeight: "bold" }}
+                    textStyle={{
+                      color: "#6000EC",
+                      fontWeight: "bold",
+                      textAlign: "center",
+                    }}
                     onSelectItem={(item) => setFiledType(item, index)}
-                    containerStyle={styles.dropDownContainer}
+                    containerStyle={[
+                      styles.dropDownContainer,
+                      {
+                        width: length == 1 ? 90 : 80,
+                        height: 55,
+                        marginBottom: length == 1 ? 5 : null,
+                      },
+                    ]}
                     style={{
-                      width: 60,
-                      height: 55,
                       borderWidth: 0,
                     }}
                     placeholderStyle={{ color: "#6000EC" }}
@@ -147,8 +156,16 @@ const CategoryComponent = ({ onRemove, category }) => {
           style={styles.removeButton}
           onPress={() => onRemove(category.key)}
         >
-          <MaterialIcons name="delete" size={24} color="#7456D2" />
-          <Text style={styles.removeText}>REMOVE</Text>
+          <MaterialIcons
+            name="delete"
+            size={length == 1 ? 24 : 22}
+            color="#7456D2"
+          />
+          <Text
+            style={[styles.removeText, { fontSize: length == 1 ? 14 : 13 }]}
+          >
+            REMOVE
+          </Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -158,10 +175,9 @@ const CategoryComponent = ({ onRemove, category }) => {
 // define your styles
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "white",
     paddingHorizontal: 3,
     paddingVertical: 1,
-    width: "98%",
+
     marginHorizontal: "1%",
     marginBottom: 10,
   },
@@ -194,7 +210,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginTop: 10,
-    marginHorizontal: 10,
   },
   field: {
     borderWidth: 1,
@@ -209,8 +224,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   dropDownContainer: {
-    width: 90,
     marginLeft: 5,
+    marginTop: 5,
     borderRadius: 5,
     borderWidth: 0.5,
     alignItems: "center",
@@ -222,7 +237,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   removeText: { color: "#7456D2", fontWeight: "600" },
-  addFieldText: { padding: 10, color: "#7456D2", fontWeight: "600" },
+  addFieldText: { padding: 5, color: "#7456D2", fontWeight: "600" },
   addFieldButton: { borderWidth: 0.5, borderRadius: 5, marginTop: 10 },
 });
 
