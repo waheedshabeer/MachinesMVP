@@ -108,7 +108,7 @@ const CategoryComponent = ({ onRemove, category, length }) => {
                     containerStyle={[
                       styles.dropDownContainer,
                       {
-                        width: length == 1 ? 90 : 80,
+                        width: length == 1 ? 90 : 85,
                         height: 55,
                         marginBottom: length == 1 ? 5 : null,
                       },
