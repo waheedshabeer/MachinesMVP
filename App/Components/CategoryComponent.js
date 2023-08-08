@@ -103,12 +103,14 @@ const CategoryComponent = ({ onRemove, category, length }) => {
                       color: "#6000EC",
                       fontWeight: "bold",
                       textAlign: "center",
+                      fontSize: 12,
                     }}
                     onSelectItem={(item) => setFiledType(item, index)}
                     containerStyle={[
                       styles.dropDownContainer,
                       {
-                        width: length == 1 ? 90 : 85,
+                        paddingLeft: 5,
+                        width: length == 1 ? 90 : 60,
                         height: 55,
                         marginBottom: length == 1 ? 5 : null,
                       },
@@ -123,7 +125,7 @@ const CategoryComponent = ({ onRemove, category, length }) => {
                   />
                   <MaterialIcons
                     name="delete"
-                    size={30}
+                    size={28}
                     color="black"
                     onPress={() => onRemoveField(index)}
                   />
@@ -149,7 +151,10 @@ const CategoryComponent = ({ onRemove, category, length }) => {
       />
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.addFieldButton} onPress={addNewField}>
+        <TouchableOpacity
+          style={[styles.addFieldButton, { width: length == 1 ? 120 : 80 }]}
+          onPress={addNewField}
+        >
           <Text style={styles.addFieldText}>ADD NEW FIELD</Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -158,11 +163,11 @@ const CategoryComponent = ({ onRemove, category, length }) => {
         >
           <MaterialIcons
             name="delete"
-            size={length == 1 ? 24 : 22}
+            size={length == 1 ? 24 : 18}
             color="#7456D2"
           />
           <Text
-            style={[styles.removeText, { fontSize: length == 1 ? 14 : 13 }]}
+            style={[styles.removeText, { fontSize: length == 1 ? 14 : 12 }]}
           >
             REMOVE
           </Text>
@@ -237,7 +242,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   removeText: { color: "#7456D2", fontWeight: "600" },
-  addFieldText: { padding: 5, color: "#7456D2", fontWeight: "600" },
+  addFieldText: {
+    padding: 5,
+    color: "#7456D2",
+    fontWeight: "600",
+  },
   addFieldButton: { borderWidth: 0.5, borderRadius: 5, marginTop: 10 },
 });
 
