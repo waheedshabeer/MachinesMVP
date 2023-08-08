@@ -110,6 +110,7 @@ const CategoryComponent = ({ onRemove, category, length }) => {
                       styles.dropDownContainer,
                       {
                         paddingLeft: 5,
+                        backgroundColor: "white",
                         width: length == 1 ? 90 : 60,
                         height: 55,
                         marginBottom: length == 1 ? 5 : null,
